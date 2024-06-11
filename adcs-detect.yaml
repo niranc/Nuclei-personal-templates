@@ -4,9 +4,7 @@ info:
   name: ADCS Detection
   author: pastaga
   severity: info
-  description: ADCS Detection checks for common redirection on potential ADCS endpoints. It should be used with the list of all domain servers like `cat servers_ips.txt | nuclei -id adcs-detect`  
-  metadata:
-    max-request: 1
+  description: ADCS Detection checks for common redirection on potential ADCS endpoints. It should be used with the list of all domain servers like `cat servers_ips.txt | nuclei -id adcs-detect`
   tags: redirect,adcs
 
 http:
@@ -14,6 +12,7 @@ http:
     path:
       - "{{BaseURL}}/certenroll"
 
+    redirects: true
     matchers-condition: and
     matchers:
       - type: status
